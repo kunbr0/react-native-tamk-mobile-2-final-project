@@ -21,7 +21,7 @@ export default function useFetch<ResponseType>(baseURL: string): IRequestRespons
     setIsLoading(true)
     setError(undefined)
     if (executeParams.clearDataBeforeFetch) {
-      setData(undefined)
+      setData(undefined as unknown as ResponseType)
     }
 
     axios({

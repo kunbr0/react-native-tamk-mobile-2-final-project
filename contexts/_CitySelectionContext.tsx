@@ -7,7 +7,8 @@ export interface ICitySelectionContext {
 }
 
 const CONTEXT_DEFAULT_VALUE: ICitySelectionContext = {
-  cityIds: [634963, 658225, 1581130, 1566083],
+  // cityIds: [634963, 658225, 1581130, 1566083],
+  cityIds: [1566083],
   addCity: () => false,
   removeCity: () => false,
 }

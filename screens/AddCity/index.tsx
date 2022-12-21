@@ -1,12 +1,13 @@
-import { Button, Text } from '@rneui/base'
-import { SearchBar } from '@rneui/themed'
+import { SearchBar, Button, Text } from '@rneui/themed'
 import React from 'react'
-import { ActivityIndicator, Platform, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, Dimensions, Platform, StyleSheet, View } from 'react-native'
 import { IWeatherData } from '../../interfaces/WeatherData.interface'
 import API_GetWeatherData from './api/getWeather'
 import Icon from 'react-native-vector-icons/AntDesign'
 import CitySelectionContext from '../../contexts/_CitySelectionContext'
 import { useNavigation } from '@react-navigation/native'
+import { GetCityByLocation } from './GetCityByLocation'
+import * as Location from 'expo-location'
 
 interface IAddCityScreenProps {}
 
@@ -19,7 +20,7 @@ export function AddCityScreen(props: IAddCityScreenProps) {
 
   const handleOnSubmit = () => {
     setLastSearchedText(searchCityNameText)
-    runGetWeather({ cityName: searchCityNameText })
+    runGetWeather({ cityName: searchCityNameText, type: 'GET_BY_CITY_NAME' })
   }
 
   const generateCityInfo = (
@@ -48,54 +49,79 @@ export function AddCityScreen(props: IAddCityScreenProps) {
     }
   }
 
+  const handleOnGetLocation = React.useCallback(
+    (location: Location.LocationObject) => {
+      const { latitude, longitude } = location.coords
+      console.log('Received location: ', longitude, '-', latitude)
+      if (latitude && longitude) {
+        runGetWeather({
+          lon: longitude,
+          lat: latitude,
+          type: 'GET_BY_LON_LAT',
+          callbackAfterSuccess(data) {
+            if (data.name) {
+              setSearchCityNameText(data.name)
+            }
+          },
+        })
+      }
+    },
+    [runGetWeather],
+  )
+
   return (
     <View style={[styles.container]}>
-      <SearchBar
-        placeholder='Type city name here...'
-        onChangeText={setSearchCityNameText}
-        onSubmitEditing={handleOnSubmit}
-        value={searchCityNameText}
-        style={{ width: '100%', fontSize: 14 }}
-        cancelButtonProps={{ style: { width: 8, height: 0 } }}
-        showLoading={getWeatherResponse.isLoading}
-        clearIcon={!getWeatherResponse.isLoading}
-        platform={Platform.OS === 'ios' ? 'ios' : 'default'}
-      />
+      <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <SearchBar
+          placeholder='Type city name here...'
+          onChangeText={setSearchCityNameText}
+          onSubmitEditing={handleOnSubmit}
+          value={searchCityNameText}
+          style={{ fontSize: 14 }}
+          containerStyle={{ width: Dimensions.get('screen').width - 72, height: 48 }}
+          cancelButtonProps={{ style: { width: 8, height: 0 } }}
+          clearIcon={true}
+          platform={Platform.OS === 'ios' ? 'ios' : 'default'}
+        />
+        <GetCityByLocation onGetLocation={handleOnGetLocation} />
+      </View>
 
-      {getWeatherResponse.isLoading == true && (
-        <View style={styles.loading_container}>
-          <ActivityIndicator size='large' />
-        </View>
-      )}
-      {getWeatherResponse.isLoading === false && getWeatherResponse.data?.id && (
-        <>
-          <View style={styles.city_container}>
-            <Text style={styles.city_name}>{getWeatherResponse.data.name}</Text>
-            <View style={styles.city_info_container}>
-              {generateCityInfo(getWeatherResponse.data).map((row, rowIdx) => (
-                <Text key={rowIdx} style={styles.city_info_text}>
-                  {row.key}: {row.value}
-                </Text>
-              ))}
-            </View>
+      <View style={{ marginTop: 16 }}>
+        {getWeatherResponse.isLoading == true && (
+          <View style={styles.loading_container}>
+            <ActivityIndicator size='large' />
           </View>
-          <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
-            <Button buttonStyle={[styles.btn_add_city]} radius={8} onPress={() => handleAddCity(getWeatherResponse.data?.id)}>
-              <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name='plus' size={24} style={[styles.btn_add_city_icon]} />
-                <Text style={[styles.btn_add_city_text]}>Add city</Text>
+        )}
+        {getWeatherResponse.isLoading === false && getWeatherResponse.data?.id && (
+          <>
+            <View style={styles.city_container}>
+              <Text style={styles.city_name}>{getWeatherResponse.data.name}</Text>
+              <View style={styles.city_info_container}>
+                {generateCityInfo(getWeatherResponse.data).map((row, rowIdx) => (
+                  <Text key={rowIdx} style={styles.city_info_text}>
+                    {row.key}: {row.value}
+                  </Text>
+                ))}
               </View>
-            </Button>
-          </View>
-        </>
-      )}
-      {getWeatherResponse.isLoading === false && lastSearchedText && !getWeatherResponse.data?.id && (
-        <>
-          <View style={styles.error_container}>
-            <Text style={styles.error_text}>Cannot find any city with name "{lastSearchedText}"</Text>
-          </View>
-        </>
-      )}
+            </View>
+            <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+              <Button buttonStyle={[styles.btn_add_city]} radius={8} onPress={() => handleAddCity(getWeatherResponse.data?.id)}>
+                <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name='plus' size={24} style={[styles.btn_add_city_icon]} />
+                  <Text style={[styles.btn_add_city_text]}>Add city</Text>
+                </View>
+              </Button>
+            </View>
+          </>
+        )}
+        {getWeatherResponse.isLoading === false && lastSearchedText && !getWeatherResponse.data?.id && (
+          <>
+            <View style={styles.error_container}>
+              <Text style={styles.error_text}>Cannot find any city with name "{lastSearchedText}"</Text>
+            </View>
+          </>
+        )}
+      </View>
     </View>
   )
 }

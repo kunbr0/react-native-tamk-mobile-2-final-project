@@ -101,18 +101,22 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
   } else {
     return (
       <View style={styles.container}>
-        <SwipeListView
-          data={listData}
-          renderItem={renderItem}
-          renderHiddenItem={renderHiddenItem}
-          leftOpenValue={0}
-          rightOpenValue={-(75 + 16)}
-          previewRowKey={'0'}
-          previewOpenValue={-40}
-          previewOpenDelay={3000}
-          onRowDidOpen={onRowDidOpen}
-          showsVerticalScrollIndicator={false}
-        />
+        {listData.length > 0 ? (
+          <SwipeListView
+            data={listData}
+            renderItem={renderItem}
+            renderHiddenItem={renderHiddenItem}
+            leftOpenValue={0}
+            rightOpenValue={-(75 + 16)}
+            previewRowKey={'0'}
+            previewOpenValue={-40}
+            previewOpenDelay={3000}
+            onRowDidOpen={onRowDidOpen}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <Text>Press + icon in Top-Right corner to add City.</Text>
+        )}
       </View>
     )
   }
