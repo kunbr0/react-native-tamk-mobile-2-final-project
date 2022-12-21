@@ -10,7 +10,7 @@ import dayjs from 'dayjs'
 import CitySelectionContext from '../../contexts/_CitySelectionContext'
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
-  const { cityIds } = React.useContext(CitySelectionContext)
+  const { cityIds, removeCity } = React.useContext(CitySelectionContext)
   const [listData, setListData] = React.useState<IWeatherData[]>([])
   const [groupWeatherResponse, getGroupWeather] = API_GetGroupWeather()
 
@@ -40,7 +40,11 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
     closeRow(rowMap, rowKey)
     const newData = [...listData]
     const prevIndex = listData.findIndex((item: any) => item.key === rowKey)
-    newData.splice(prevIndex, 1)
+    if (prevIndex !== -1) {
+      newData.splice(prevIndex, 1)
+      removeCity(rowKey)
+    }
+
     setListData(newData)
   }
 
