@@ -121,6 +121,9 @@ export function AddCityScreen(props: IAddCityScreenProps) {
             </View>
           </>
         )}
+        {getWeatherResponse.isLoading === false && !lastSearchedText && !getWeatherResponse.data?.id && (
+          <Text style={{ marginHorizontal: 12, marginVertical: 4 }}>You can search city by Name or by your current Location.</Text>
+        )}
       </View>
     </View>
   )
