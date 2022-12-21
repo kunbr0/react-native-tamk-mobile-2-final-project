@@ -7,13 +7,13 @@ interface IWeatherDataProps {
 }
 
 const WeatherData = (props: IWeatherDataProps) => {
-  const [weatherDataResponse, getWeatherData] = API_GetWeatherData()
+  const [weatherDataResponse, runGetWeather] = API_GetWeatherData()
 
   React.useEffect(() => {
     if (props.cityName) {
-      getWeatherData({ cityName: props.cityName })
+      runGetWeather({ cityName: props.cityName })
     }
-  }, [props.cityName, getWeatherData])
+  }, [props.cityName, runGetWeather])
 
   if (weatherDataResponse.isLoading) {
     return (

@@ -7,9 +7,10 @@ import API_GetGroupWeather from './api/getGroupWeather'
 import { IWeatherData } from '../../interfaces/WeatherData.interface'
 import { cloneDeep } from 'lodash'
 import dayjs from 'dayjs'
+import CitySelectionContext from '../../contexts/_CitySelectionContext'
 
 const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
-  const [cityIds, setCityIds] = React.useState<number[]>([634963, 658225, 1581130, 1566083, 1850144, 5128581, 2867714, 290030])
+  const { cityIds } = React.useContext(CitySelectionContext)
   const [listData, setListData] = React.useState<IWeatherData[]>([])
   const [groupWeatherResponse, getGroupWeather] = API_GetGroupWeather()
 
@@ -51,7 +52,7 @@ const HomeScreen = ({ navigation }: StackScreenProps<any>) => {
     <TouchableHighlight
       onPress={() => {
         console.log('You touched me')
-        navigation.navigate('WeatherDetails', { cityName: data.item.name })
+        navigation.navigate('WeatherDetailsScreen', { cityName: data.item.name })
       }}
       style={styles.rowFront}
       underlayColor={'#AAA'}

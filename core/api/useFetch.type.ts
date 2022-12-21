@@ -27,6 +27,7 @@ export interface IExecuteUserPassedParams<ResponseType> {
   callbackAfterSuccess?: (data: ResponseType) => void
   callbackAfterFail?: (error: AxiosError<any>) => void
   callbackAfterFinish?: () => void
+  clearDataBeforeFetch?: boolean
 }
 
 export type TRunRequestFunction<ResponseType = any, RequiredParams = {}> = (params: IExecuteUserPassedParams<ResponseType> & RequiredParams) => void

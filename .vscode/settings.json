@@ -6,16 +6,5 @@
   // Runs Prettier, then ESLint
   "editor.codeActionsOnSave": ["source.formatDocument", "source.fixAll.eslint"],
   "cSpell.ignoreWords": ["Selecteds"],
-  "cSpell.words": [
-    "chartjs",
-    "clickaway",
-    "docco",
-    "hljs",
-    "htmlbars",
-    "Nederlands",
-    "registerables",
-    "RESTAPI",
-    "Svenska",
-    "jsonplaceholder"
-  ]
+  "cSpell.words": ["chartjs", "clickaway", "docco", "hljs", "htmlbars", "jsonplaceholder", "Nederlands", "registerables", "RESTAPI", "rneui", "Svenska"]
 }
